@@ -1,0 +1,41 @@
+{
+    "server": {
+        "host": "127.0.0.1:8171"
+    },
+
+    "routes": {
+        "/": "./share/frontend/",
+        "/trending": "./share/frontend/index.html",
+        "/preferences": "./share/frontend/index.html",
+        "/results": "./share/frontend/index.html",
+        "/playlist": "./share/frontend/index.html",
+        "/watch_videos": "./share/frontend/index.html",
+        "/clip": "./share/frontend/index.html",
+        "/login": "./share/frontend/index.html",
+        "/register": "./share/frontend/index.html",
+        "/feed": "./share/frontend/index.html",
+        "/import": "./share/frontend/index.html",
+        "/subscriptions": "./share/frontend/index.html",
+        "/history": "./share/frontend/index.html",
+        "/playlists": "./share/frontend/index.html",
+        "/channel": "./share/frontend/index.html",
+        "/user": "./share/frontend/index.html",
+        "/c": "./share/frontend/index.html",
+        "/v": "./share/frontend/index.html",
+        "/w": "./share/frontend/index.html",
+        "/embed": "./share/frontend/index.html",
+        "/live": "./share/frontend/index.html",
+        "/shorts": "./share/frontend/index.html",
+        "/watch": "./share/frontend/index.html"
+    },
+
+    "config": {
+        "enable_hot_reload": false,
+        "fast_mem_cache": false,
+        "enable_cache_control": true,
+        "enable_directory_listing": false,
+        "minify_html": false,
+        "follow_symlinks": false,
+        "enable_logging": false
+    }
+}

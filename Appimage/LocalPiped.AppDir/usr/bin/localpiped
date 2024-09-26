@@ -1,0 +1,4 @@
+#!/bin/sh
+
+./bin/binserve &
+java -jar ./lib/backend.jar

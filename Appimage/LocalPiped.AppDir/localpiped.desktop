@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=LocalPiped
+Icon=localpiped
+Exec=localpiped
+Type=Application
+Terminal=true
+Categories=AudioVideo;

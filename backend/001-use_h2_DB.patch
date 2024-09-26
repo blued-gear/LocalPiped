@@ -1,0 +1,77 @@
+Subject: [PATCH] LocalPiped: use h2 DB
+---
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision 01e2cf1456eb8d88d0057828d658ef33d49bd2bc)
++++ b/build.gradle	(revision 03afe2ecfd4a27670a17e386c5a6686cd8077d1e)
+@@ -30,7 +30,8 @@
+     implementation 'io.activej:activej-specializer:5.5'
+     implementation 'io.activej:activej-launchers-http:5.5'
+     implementation 'org.hsqldb:hsqldb:2.7.3'
+-    implementation 'org.postgresql:postgresql:42.7.3'
++    //implementation 'org.postgresql:postgresql:42.7.3'
++    implementation 'com.h2database:h2:2.3.232'
+     implementation 'org.hibernate:hibernate-core:6.4.1.Final'
+     implementation 'org.hibernate:hibernate-hikaricp:6.4.1.Final'
+     implementation 'org.liquibase:liquibase-core:4.28.0'
+Index: src/main/java/me/kavin/piped/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/me/kavin/piped/Main.java b/src/main/java/me/kavin/piped/Main.java
+--- a/src/main/java/me/kavin/piped/Main.java	(revision 01e2cf1456eb8d88d0057828d658ef33d49bd2bc)
++++ b/src/main/java/me/kavin/piped/Main.java	(revision 03afe2ecfd4a27670a17e386c5a6686cd8077d1e)
+@@ -76,12 +76,12 @@
+ 
+         Injector.useSpecializer();
+ 
+-        try {
++        /*try {
+             LiquibaseHelper.init();
+         } catch (Exception e) {
+             ExceptionHandler.handle(e);
+             System.exit(1);
+-        }
++        }*/
+ 
+         Multithreading.runAsync(() ->  Thread.ofVirtual().start(new SyncRunner(
+                 new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build(),
+Index: src/main/java/me/kavin/piped/utils/LiquibaseHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/me/kavin/piped/utils/LiquibaseHelper.java b/src/main/java/me/kavin/piped/utils/LiquibaseHelper.java
+--- a/src/main/java/me/kavin/piped/utils/LiquibaseHelper.java	(revision 01e2cf1456eb8d88d0057828d658ef33d49bd2bc)
++++ b/src/main/java/me/kavin/piped/utils/LiquibaseHelper.java	(revision 03afe2ecfd4a27670a17e386c5a6686cd8077d1e)
+@@ -24,7 +24,7 @@
+         String password = Constants.hibernateProperties.get("hibernate.connection.password");
+ 
+         // ensure postgres driver is loaded
+-        DriverManager.registerDriver(new org.postgresql.Driver());
++        DriverManager.registerDriver(new org.h2.Driver());
+ 
+         // register YugabyteDB database
+         DatabaseFactory.getInstance().register(new liquibase.ext.yugabytedb.database.YugabyteDBDatabase());
+Index: src/main/resources/hibernate.cfg.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/hibernate.cfg.xml b/src/main/resources/hibernate.cfg.xml
+--- a/src/main/resources/hibernate.cfg.xml	(revision 01e2cf1456eb8d88d0057828d658ef33d49bd2bc)
++++ b/src/main/resources/hibernate.cfg.xml	(revision 03afe2ecfd4a27670a17e386c5a6686cd8077d1e)
+@@ -4,7 +4,7 @@
+         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+ <hibernate-configuration>
+     <session-factory>
+-        <property name="hibernate.hbm2ddl.auto">validate</property>
++        <property name="hibernate.hbm2ddl.auto">create</property>
+         <!-- Optional: Show SQL output for debugging -->
+         <property name="hibernate.show_sql">false</property>
+         <property name="hibernate.format_sql">true</property>

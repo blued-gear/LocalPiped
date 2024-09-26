@@ -1,0 +1,11 @@
+.idea
+
+backend/Piped-Backend
+backend/*.jar
+
+frontend/Piped
+frontend/web
+
+Appimage/build
+Appimage/tools
+Appimage/*.AppImage
