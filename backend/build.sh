@@ -11,7 +11,7 @@ fi
 if [[ -d ./Piped-Backend ]]; then
   echo updating repo
   cd Piped-Backend
-  git checkout -f master
+  git checkout -f origin/master
   git reset --hard
   git pull
 else
