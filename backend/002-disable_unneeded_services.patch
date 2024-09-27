@@ -1,0 +1,39 @@
+Subject: [PATCH] LocalPiped: disable unneeded services
+---
+Index: src/main/java/me/kavin/piped/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/me/kavin/piped/Main.java b/src/main/java/me/kavin/piped/Main.java
+--- a/src/main/java/me/kavin/piped/Main.java	(revision 03afe2ecfd4a27670a17e386c5a6686cd8077d1e)
++++ b/src/main/java/me/kavin/piped/Main.java	(revision c99a8dc634c4235c34066e91e431adc378cd4c95)
+@@ -67,12 +67,12 @@
+             }
+         });
+ 
+-        Sentry.init(options -> {
++        /*Sentry.init(options -> {
+             options.setDsn(Constants.SENTRY_DSN);
+             options.setRelease(Constants.VERSION);
+             options.addIgnoredExceptionForType(ErrorResponse.class);
+             options.setTracesSampleRate(0.1);
+-        });
++        });*/
+ 
+         Injector.useSpecializer();
+ 
+@@ -83,11 +83,11 @@
+             System.exit(1);
+         }*/
+ 
+-        Multithreading.runAsync(() ->  Thread.ofVirtual().start(new SyncRunner(
++        /*Multithreading.runAsync(() ->  Thread.ofVirtual().start(new SyncRunner(
+                 new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build(),
+                 MATRIX_SERVER,
+                 MatrixHelper.MATRIX_TOKEN)
+-        ));
++        ));*/
+ 
+         new Timer().scheduleAtFixedRate(new TimerTask() {
+             @Override
