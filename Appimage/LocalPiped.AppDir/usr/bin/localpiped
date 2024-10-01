@@ -1,4 +1,6 @@
 #!/bin/sh
 
-./bin/binserve &
+trap "trap - TERM && kill -- -$$" INT TERM EXIT
+
+java -jar ./lib/frontendserver.jar &
 java -jar ./lib/backend.jar

@@ -8,4 +8,5 @@ frontend/web
 
 Appimage/build
 Appimage/tools
+Appimage/forntendserver/build
 Appimage/*.AppImage

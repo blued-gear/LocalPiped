@@ -26,11 +26,6 @@ if [[ ! -d tools ]]; then
   mkdir tools
   cd tools
 
-  BINSERVE_VERSION='binserve-v0.2.0-x86_64-unknown-linux-gnu'
-  wget -vv -O binserve.tar.gz https://github.com/mufeedvh/binserve/releases/download/v0.2.0/$BINSERVE_VERSION.tar.gz
-  tar -zxv --strip-components=1 -f binserve.tar.gz "$BINSERVE_VERSION/binserve"
-  rm binserve.tar.gz
-
   wget -O appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
   chmod +x ./appimagetool.AppImage
   wget -O AppRun https://github.com/AppImage/AppImageKit/releases/download/13/AppRun-x86_64
@@ -38,6 +33,11 @@ if [[ ! -d tools ]]; then
 
   cd ..
 fi
+
+printf '\n### building frontend-server ###\n\n'
+cd frontendserver
+./gradlew shadowJar
+cd ..
 
 printf '\n### assembling files and building AppImage ###\n\n'
 rm -rf ./build || true
@@ -47,7 +47,7 @@ cp -r ./LocalPiped.AppDir $INSTALL_DIR
 cp ./tools/AppRun $INSTALL_DIR/
 cp ../backend/backend.jar $INSTALL_DIR/usr/lib/
 cp -r ../frontend/web $INSTALL_DIR/usr/share/frontend
-cp ./tools/binserve $INSTALL_DIR/usr/bin/
+cp ./frontendserver/build/libs/frontendserver-1.0-all.jar $INSTALL_DIR/usr/lib/frontendserver.jar
 cp ../config.properties $INSTALL_DIR/usr/
 
 ./tools/appimagetool.AppImage $INSTALL_DIR
