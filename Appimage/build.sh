@@ -9,15 +9,17 @@ fi
 
 cd ..
 
-printf '\n### building backend ###\n\n'
-cd ./backend
-./build.sh
-cd ..
+if [[ "$NO_BUILD_DEP" == "" ]]; then
+  printf '\n### building backend ###\n\n'
+  cd ./backend
+  ./build.sh
+  cd ..
 
-printf '\n### building frontend ###\n\n'
-cd ./frontend
-./build.sh
-cd ..
+  printf '\n### building frontend ###\n\n'
+  cd ./frontend
+  ./build.sh
+  cd ..
+fi
 
 cd Appimage
 

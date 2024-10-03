@@ -8,22 +8,26 @@ if [[ $PWD != */frontend ]]; then
 fi
 
 # update or clone repo
-if [[ -d ./Piped ]]; then
-  echo updating repo
-  cd Piped
-  git checkout -f origin/master
-  git reset --hard
-  git pull
+if [[ "$KEEP_GIT" == "" ]]; then
+  if [[ -d ./Piped ]]; then
+    echo updating repo
+    cd Piped
+    git checkout -f origin/master
+    git reset --hard
+    git pull
+  else
+    echo cloning repo
+    git clone --depth 1 https://github.com/TeamPiped/Piped.git
+    cd Piped
+  fi
+
+  echo applying patches
+  for file in ../*.patch; do
+    git apply "$file"
+  done
 else
-  echo cloning repo
-  git clone --depth 1 https://github.com/TeamPiped/Piped.git
   cd Piped
 fi
-
-echo applying patches
-for file in ../*.patch; do
-  git apply "$file"
-done
 
 echo building site
 

@@ -8,22 +8,26 @@ if [[ $PWD != */backend ]]; then
 fi
 
 # update or clone repo
-if [[ -d ./Piped-Backend ]]; then
-  echo updating repo
-  cd Piped-Backend
-  git checkout -f origin/master
-  git reset --hard
-  git pull
+if [[ "$KEEP_GIT" == "" ]]; then
+  if [[ -d ./Piped-Backend ]]; then
+    echo updating repo
+    cd Piped-Backend
+    git checkout -f origin/master
+    git reset --hard
+    git pull
+  else
+    echo cloning repo
+    git clone --depth 1 https://github.com/TeamPiped/Piped-Backend.git
+    cd Piped-Backend
+  fi
+
+  echo applying patches
+  for file in ../*.patch; do
+    git apply "$file"
+  done
 else
-  echo cloning repo
-  git clone --depth 1 https://github.com/TeamPiped/Piped-Backend.git
   cd Piped-Backend
 fi
-
-echo applying patches
-for file in ../*.patch; do
-  git apply "$file"
-done
 
 echo building jar
 ./gradlew shadowJar
