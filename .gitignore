@@ -6,6 +6,8 @@ backend/*.jar
 frontend/Piped
 frontend/web
 
+pipedproxy/piped-proxy
+
 Appimage/build
 Appimage/tools
 Appimage/forntendserver/build

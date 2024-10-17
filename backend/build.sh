@@ -8,7 +8,7 @@ if [[ $PWD != */backend ]]; then
 fi
 
 # update or clone repo
-if [[ "$KEEP_GIT" == "" ]]; then
+if [[ "$BACKEND_KEEP_GIT" == "" ]]; then
   if [[ -d ./Piped-Backend ]]; then
     echo updating repo
     cd Piped-Backend

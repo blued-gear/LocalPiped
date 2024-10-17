@@ -2,5 +2,6 @@
 
 trap "trap - TERM && kill -- -$$" INT TERM EXIT
 
+BIND='127.0.0.1:8172' ./lib/piped-proxy &
 java -jar ./lib/frontendserver.jar &
 java -jar ./lib/backend.jar

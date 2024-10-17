@@ -8,7 +8,7 @@ if [[ $PWD != */frontend ]]; then
 fi
 
 # update or clone repo
-if [[ "$KEEP_GIT" == "" ]]; then
+if [[ "$FRONTEND_KEEP_GIT" == "" ]]; then
   if [[ -d ./Piped ]]; then
     echo updating repo
     cd Piped

@@ -19,6 +19,11 @@ if [[ "$NO_BUILD_DEP" == "" ]]; then
   cd ./frontend
   ./build.sh
   cd ..
+
+  printf '\n### building pipedproxy ###\n\n'
+  cd ./pipedproxy
+  ./build.sh
+  cd ..
 fi
 
 cd Appimage
@@ -36,10 +41,12 @@ if [[ ! -d tools ]]; then
   cd ..
 fi
 
-printf '\n### building frontend-server ###\n\n'
-cd frontendserver
-./gradlew shadowJar
-cd ..
+if [[ "$NO_BUILD_FESERVER" == "" ]]; then
+  printf '\n### building frontend-server ###\n\n'
+  cd frontendserver
+  ./gradlew shadowJar
+  cd ..
+fi
 
 printf '\n### assembling files and building AppImage ###\n\n'
 rm -rf ./build || true
@@ -49,6 +56,7 @@ cp -r ./LocalPiped.AppDir $INSTALL_DIR
 cp ./tools/AppRun $INSTALL_DIR/
 cp ../backend/backend.jar $INSTALL_DIR/usr/lib/
 cp -r ../frontend/web $INSTALL_DIR/usr/share/frontend
+cp ../pipedproxy/piped-proxy $INSTALL_DIR/usr/lib/
 cp ./frontendserver/build/libs/frontendserver-1.0-all.jar $INSTALL_DIR/usr/lib/frontendserver.jar
 cp ../config.properties $INSTALL_DIR/usr/
 
