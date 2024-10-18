@@ -1,5 +1,7 @@
 .idea
 
+env.sh
+
 backend/Piped-Backend
 backend/*.jar
 
