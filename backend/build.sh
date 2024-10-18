@@ -22,6 +22,7 @@ if [[ "$BACKEND_KEEP_GIT" == "" ]]; then
   fi
 
   echo applying patches
+  git config set --local core.autocrlf true
   for file in ../*.patch; do
     git apply "$file"
   done
