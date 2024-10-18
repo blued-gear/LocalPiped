@@ -33,9 +33,11 @@ if [[ ! -d tools ]]; then
   mkdir tools
   cd tools
 
-  wget -O appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+  ARCH=$(uname -m)
+
+  wget -O appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-$ARCH.AppImage
   chmod +x ./appimagetool.AppImage
-  wget -O AppRun https://github.com/AppImage/AppImageKit/releases/download/13/AppRun-x86_64
+  wget -O AppRun https://github.com/AppImage/AppImageKit/releases/download/13/AppRun-$ARCH
   chmod +x AppRun
 
   cd ..
