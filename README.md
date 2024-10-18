@@ -11,6 +11,7 @@ This will significantly rise your chances to not get blocked by Google without s
 - wget
 - JDK 21
 - Node.js, pnpm
+- fuse
 
 ### AppImage
 
