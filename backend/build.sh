@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+source ../utils.sh
 
 if [[ $PWD != */backend ]]; then
   echo 'this script must be called from the directory containing it' >&2
@@ -9,15 +10,14 @@ fi
 
 # update or clone repo
 if [[ "$BACKEND_KEEP_GIT" == "" ]]; then
-  if [[ -d ./Piped-Backend ]]; then
+  if [[ -d ./Piped-Backend/.git ]]; then
     echo updating repo
     cd Piped-Backend
     git checkout -f origin/master
     git reset --hard
     git pull
   else
-    echo cloning repo
-    git clone --depth 1 https://github.com/TeamPiped/Piped-Backend.git
+    gitClone https://github.com/TeamPiped/Piped-Backend.git Piped-Backend master
     cd Piped-Backend
   fi
 

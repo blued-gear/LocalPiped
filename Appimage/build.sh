@@ -53,7 +53,7 @@ fi
 printf '\n### assembling files and building AppImage ###\n\n'
 rm -rf ./build || true
 mkdir build
-INSTALL_DIR=./build/LocalPiped-x86_64.AppDir
+INSTALL_DIR="./build/LocalPiped-$(uname -m).AppDir"
 cp -r ./LocalPiped.AppDir $INSTALL_DIR
 cp ./tools/AppRun $INSTALL_DIR/
 cp ../backend/backend.jar $INSTALL_DIR/usr/lib/

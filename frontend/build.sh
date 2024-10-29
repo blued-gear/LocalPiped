@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+source ../utils.sh
 
 if [[ $PWD != */frontend ]]; then
   echo 'this script must be called from the directory containing it' >&2
@@ -9,15 +10,14 @@ fi
 
 # update or clone repo
 if [[ "$FRONTEND_KEEP_GIT" == "" ]]; then
-  if [[ -d ./Piped ]]; then
+  if [[ -d ./Piped/.git ]]; then
     echo updating repo
     cd Piped
     git checkout -f origin/master
     git reset --hard
     git pull
   else
-    echo cloning repo
-    git clone --depth 1 https://github.com/TeamPiped/Piped.git
+    gitClone https://github.com/TeamPiped/Piped.git Piped master
     cd Piped
   fi
 
