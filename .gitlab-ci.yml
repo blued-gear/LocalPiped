@@ -1,0 +1,105 @@
+image: docker.io/library/fedora:40
+
+variables:
+  # Change Gradles cache directory to be inside the project directory since we can only cache local items.
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle_inst"
+
+stages:
+  - checkUpdates
+  - build
+  - publish
+
+checkUpdates:
+  stage: checkUpdates
+  tags:
+    - pi
+  cache:
+    - key: LocalPiped-dnf-1
+      paths:
+        - .dnf
+  artifacts:
+    paths:
+      - .ci_comm
+      - component_versions.txt
+  script:
+    #- echo "CI_SKIP=0" > .ci_comm
+    #- exit 0
+
+    - ARTIFACT_FOUND=$(curl --silent --write-out "%{http_code}" -L -o component_versions.txt.art "https://$CI_SERVER_HOST/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/-/jobs/artifacts/$CI_COMMIT_REF_SLUG/raw/component_versions.txt?job=checkUpdates")
+    - if [[ "$ARTIFACT_FOUND" == 200 ]]; then echo 'using component_versions.txt from last run'; mv component_versions.txt.art component_versions.txt; fi
+
+    - mkdir -p "$CI_PROJECT_DIR/.dnf/persist" "$CI_PROJECT_DIR/.dnf/cache"
+    - echo "persistdir=$CI_PROJECT_DIR/.dnf/persist" >> /etc/dnf/dnf.conf
+    - echo "cachedir=$CI_PROJECT_DIR/.dnf/cache" >> /etc/dnf/dnf.conf
+    - echo "keepcache=True" >> /etc/dnf/dnf.conf
+    - dnf install -y git
+    
+    - ./check_for_component_updates.sh && RES=$? || RES=$?
+    - if [ $RES == 0 ]; then (echo "CI_SKIP=1" > .ci_comm); elif [ $RES == 10 ]; then (echo "CI_SKIP=0" > .ci_comm); else exit 1; fi
+
+.build-proto:
+  stage: build
+  cache:
+    - key: LocalPiped-gradle-1
+      paths:
+        - .gradle_inst
+    - key: LocalPiped-node-1
+      paths:
+        - frontend/Piped/node_modules
+    - key: LocalPiped-dnf-1
+      paths:
+        - .dnf
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - Appimage/*.AppImage
+  script:
+    - source .ci_comm
+    - '[ "$CI_SKIP" == 1 ] && echo SKIPPING && exit 0'
+
+    - echo installing dependencies...
+    - mkdir -p "$CI_PROJECT_DIR/.dnf/persist" "$CI_PROJECT_DIR/.dnf/cache"
+    - echo "persistdir=$CI_PROJECT_DIR/.dnf/persist" >> /etc/dnf/dnf.conf
+    - echo "cachedir=$CI_PROJECT_DIR/.dnf/cache" >> /etc/dnf/dnf.conf
+    - echo "keepcache=True" >> /etc/dnf/dnf.conf
+    - dnf install -y dnf-plugins-core git wget java-21-openjdk-headless pnpm fuse fuse-libs which
+    - dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+    - dnf install -y --setopt=install_weak_deps=false docker-ce-cli
+
+    - echo building...
+    - cd Appimage
+    - ./build.sh
+
+build-aarch64:
+  extends: .build-proto
+  tags:
+    - docker
+    - linux
+    - aarch64
+build-x86_64:
+  extends: .build-proto
+  tags:
+    - docker
+    - linux
+    - x86_64
+
+publishAppimage:
+  stage: publish
+  tags:
+    - pi
+  script:
+    - source .ci_comm
+    - '[ "$CI_SKIP" == 1 ] && echo SKIPPING && exit 0'
+
+    - echo "GITLAB_HOST=https://$CI_SERVER_HOST" > env.sh
+    - echo "GITLAB_PROJECT_ID=$CI_PROJECT_ID" >> env.sh
+    - echo "GITLAB_JOB_TOKEN=$CI_JOB_TOKEN" >> env.sh
+
+    #- export PKG_TYPE='AppImage-Test'
+    - >-
+      for f in ./Appimage/*.AppImage; do
+        NEW_PATH="./Appimage/$(basename "$f" | sed "s/-/-$(date -u +'%Y%m%d')-/")";
+        mv "$f" "$NEW_PATH";
+        ls -a ./Appimage/;
+        ./uploadArtifact.sh "$NEW_PATH";
+      done
