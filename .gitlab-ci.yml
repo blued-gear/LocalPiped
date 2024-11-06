@@ -1,4 +1,4 @@
-image: docker.io/library/fedora:40
+image: docker.io/library/fedora:41
 
 variables:
   # Change Gradles cache directory to be inside the project directory since we can only cache local items.
